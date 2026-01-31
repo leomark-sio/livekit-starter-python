@@ -1,3 +1,5 @@
+"""LiveKit voice AI agent entrypoint."""
+
 import logging
 
 from dotenv import load_dotenv
@@ -15,19 +17,28 @@ from livekit.agents import (
 from livekit.plugins import noise_cancellation, silero
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
 
-logger = logging.getLogger("agent")
-
 load_dotenv(".env.local")
+
+logger = logging.getLogger(__name__)
+
+# Voice pipeline configuration
+DEFAULT_TTS_VOICE = "9626c31c-bec5-4cca-baa8-f8ba9e84c8bc"
+ASSISTANT_INSTRUCTIONS = """You are a helpful voice AI assistant. The user is interacting with you via voice, even if you perceive the conversation as text.
+You eagerly assist users with their questions by providing information from your extensive knowledge.
+Your responses are concise, to the point, and without any complex formatting or punctuation including emojis, asterisks, or other symbols.
+You are curious, friendly, and have a sense of humor."""
+
+
+def _noise_cancellation_factory(params: room_io.AudioInputParams) -> noise_cancellation.NoiseCancellation:
+    """Select noise cancellation based on participant type (SIP vs regular)."""
+    if params.participant.kind == rtc.ParticipantKind.PARTICIPANT_KIND_SIP:
+        return noise_cancellation.BVCTelephony()
+    return noise_cancellation.BVC()
 
 
 class Assistant(Agent):
     def __init__(self) -> None:
-        super().__init__(
-            instructions="""You are a helpful voice AI assistant. The user is interacting with you via voice, even if you perceive the conversation as text.
-            You eagerly assist users with their questions by providing information from your extensive knowledge.
-            Your responses are concise, to the point, and without any complex formatting or punctuation including emojis, asterisks, or other symbols.
-            You are curious, friendly, and have a sense of humor.""",
-        )
+        super().__init__(instructions=ASSISTANT_INSTRUCTIONS)
 
     # To add tools, use the @function_tool decorator.
     # Here's an example that adds a simple weather tool.
@@ -50,7 +61,7 @@ class Assistant(Agent):
 server = AgentServer()
 
 
-def prewarm(proc: JobProcess):
+def prewarm(proc: JobProcess) -> None:
     proc.userdata["vad"] = silero.VAD.load()
 
 
@@ -75,9 +86,7 @@ async def my_agent(ctx: JobContext):
         llm=inference.LLM(model="openai/gpt-4.1-mini"),
         # Text-to-speech (TTS) is your agent's voice, turning the LLM's text into speech that the user can hear
         # See all available models as well as voice selections at https://docs.livekit.io/agents/models/tts/
-        tts=inference.TTS(
-            model="cartesia/sonic-3", voice="9626c31c-bec5-4cca-baa8-f8ba9e84c8bc"
-        ),
+        tts=inference.TTS(model="cartesia/sonic-3", voice=DEFAULT_TTS_VOICE),
         # VAD and turn detection are used to determine when the user is speaking and when the agent should respond
         # See more at https://docs.livekit.io/agents/build/turns
         turn_detection=MultilingualModel(),
@@ -111,9 +120,7 @@ async def my_agent(ctx: JobContext):
         room=ctx.room,
         room_options=room_io.RoomOptions(
             audio_input=room_io.AudioInputOptions(
-                noise_cancellation=lambda params: noise_cancellation.BVCTelephony()
-                if params.participant.kind == rtc.ParticipantKind.PARTICIPANT_KIND_SIP
-                else noise_cancellation.BVC(),
+                noise_cancellation=_noise_cancellation_factory,
             ),
         ),
     )

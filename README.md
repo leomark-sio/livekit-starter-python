@@ -6,6 +6,8 @@
 
 A complete starter project for building voice AI apps with [LiveKit Agents for Python](https://github.com/livekit/agents) and [LiveKit Cloud](https://cloud.livekit.io/).
 
+**Repository:** [https://github.com/leomark-sio/livekit-starter-python](https://github.com/leomark-sio/livekit-starter-python)
+
 The starter project includes:
 
 - A simple voice AI assistant, ready for extension and customization
@@ -45,14 +47,14 @@ For Gemini CLI, use this command to install the server:
 gemini mcp add --transport http livekit-docs https://docs.livekit.io/mcp
 ```
 
-The project includes a complete [AGENTS.md](AGENTS.md) file for these assistants. You can modify this file  your needs. To learn more about this file, see [https://agents.md](https://agents.md).
+The project includes a complete [AGENTS.md](AGENTS.md) file for these assistants. You can modify this file for your needs. To learn more about this file, see [https://agents.md](https://agents.md).
 
 ## Dev Setup
 
 Clone the repository and install dependencies to a virtual environment:
 
 ```console
-cd agent-starter-python
+cd livekit-starter-python
 uv sync
 ```
 
@@ -136,6 +138,13 @@ This project is production-ready and includes a working `Dockerfile`. To deploy 
 ## Self-hosted LiveKit
 
 You can also self-host LiveKit instead of using LiveKit Cloud. See the [self-hosting](https://docs.livekit.io/home/self-hosting/) guide for more information. If you choose to self-host, you'll need to also use [model plugins](https://docs.livekit.io/agents/models/#plugins) instead of LiveKit Inference and will need to remove the [LiveKit Cloud noise cancellation](https://docs.livekit.io/home/cloud/noise-cancellation/) plugin.
+
+## Author & Contact
+
+**Leo** ([leomark-sio](https://github.com/leomark-sio))
+
+- **GitHub:** [https://github.com/leomark-sio](https://github.com/leomark-sio)
+- **Email:** [leomarksio386@gmail.com](mailto:leomarksio386@gmail.com)
 
 ## License
 
