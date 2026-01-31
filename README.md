@@ -139,13 +139,6 @@ This project is production-ready and includes a working `Dockerfile`. To deploy 
 
 You can also self-host LiveKit instead of using LiveKit Cloud. See the [self-hosting](https://docs.livekit.io/home/self-hosting/) guide for more information. If you choose to self-host, you'll need to also use [model plugins](https://docs.livekit.io/agents/models/#plugins) instead of LiveKit Inference and will need to remove the [LiveKit Cloud noise cancellation](https://docs.livekit.io/home/cloud/noise-cancellation/) plugin.
 
-## Author & Contact
-
-**Leo** ([leomark-sio](https://github.com/leomark-sio))
-
-- **GitHub:** [https://github.com/leomark-sio](https://github.com/leomark-sio)
-- **Email:** [leomarksio386@gmail.com](mailto:leomarksio386@gmail.com)
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
